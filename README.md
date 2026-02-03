@@ -226,7 +226,7 @@ Structured JSON with all extracted data and confidence scores:
 {
   "meta": {
     "version": "1.0.0",
-    "generatedAt": "2024-01-15T10:30:00.000Z",
+    "generatedAt": "2026-01-15T10:30:00.000Z",
     "sourceUrl": "https://example.com",
     "pagesCrawled": 6,
     "crawlDuration": 12500,
@@ -260,7 +260,7 @@ Comprehensive markdown documentation:
 # Design System Documentation
 
 > **Source**: https://example.com
-> **Extracted**: 2024-01-15T10:30:00.000Z
+> **Extracted**: 2026-01-15T10:30:00.000Z
 > **Pages Analyzed**: 6
 
 ## 1. Tech Stack
@@ -467,7 +467,7 @@ MIT License — See [LICENSE](LICENSE) for details.
 
 ## Changelog
 
-### v1.0.0 (2024)
+### v1.0.0 (2026)
 - Initial release
 - Tech stack detection (17 frameworks/libraries)
 - Design token extraction (colors, typography, radii, shadows)
