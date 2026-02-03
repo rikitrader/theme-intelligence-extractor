@@ -1,0 +1,26 @@
+{
+  "name": "theme-intelligence-extractor",
+  "version": "1.0.0",
+  "description": "Extract design tokens and generate integration prompts from any website",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "theme-extract": "./cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node cli.js",
+    "extract": "node cli.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "design-tokens",
+    "theme-extraction",
+    "css-analysis",
+    "design-system"
+  ],
+  "author": "",
+  "license": "MIT"
+}

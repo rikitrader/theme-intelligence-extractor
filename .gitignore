@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+*.js
+*.d.ts
+*.js.map
+*.d.ts.map
+!cli.js
+
+# Output directory
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Package lock (optional - remove if you want to track it)
+package-lock.json

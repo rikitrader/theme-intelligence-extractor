@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#grad1)" />
+
+  <!-- Inner circle -->
+  <circle cx="100" cy="100" r="75" fill="#1a1a2e" />
+
+  <!-- Magnifying glass body -->
+  <circle cx="85" cy="85" r="35" fill="none" stroke="#fff" stroke-width="6" />
+
+  <!-- Magnifying glass handle -->
+  <line x1="112" y1="112" x2="145" y2="145" stroke="#fff" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Design tokens inside magnifying glass -->
+  <!-- Color swatch -->
+  <rect x="68" y="70" width="12" height="12" rx="2" fill="#f093fb" />
+
+  <!-- Typography line -->
+  <rect x="83" y="72" width="20" height="3" rx="1" fill="#667eea" />
+  <rect x="83" y="78" width="14" height="2" rx="1" fill="#888" />
+
+  <!-- Spacing indicator -->
+  <rect x="68" y="88" width="8" height="8" rx="1" fill="none" stroke="#4ade80" stroke-width="1.5" />
+  <rect x="79" y="88" width="8" height="8" rx="1" fill="none" stroke="#4ade80" stroke-width="1.5" />
+  <rect x="90" y="88" width="8" height="8" rx="1" fill="none" stroke="#4ade80" stroke-width="1.5" />
+
+  <!-- Code brackets -->
+  <text x="60" y="110" font-family="monospace" font-size="14" fill="#fbbf24">{</text>
+  <text x="103" y="110" font-family="monospace" font-size="14" fill="#fbbf24">}</text>
+
+  <!-- Extraction arrows -->
+  <path d="M 130 70 L 150 50" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" marker-end="url(#arrowhead)" />
+  <path d="M 130 85 L 155 85" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" />
+  <path d="M 130 100 L 150 120" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Small dots representing extracted tokens -->
+  <circle cx="158" cy="45" r="4" fill="#f093fb" />
+  <circle cx="163" cy="85" r="4" fill="#667eea" />
+  <circle cx="158" cy="125" r="4" fill="#4ade80" />
+
+  <!-- TIE text -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">THEME INTEL</text>
+</svg>
