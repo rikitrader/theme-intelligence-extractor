@@ -2,9 +2,106 @@
 /**
  * Theme Intelligence Extractor - CLI
  * Command-line interface for the theme extractor
+ *
+ * ⚠️ PASSWORD PROTECTED - Requires authentication to run
  */
 
 import { runExtractor, ExtractorInput } from './index.js';
+import * as crypto from 'crypto';
+import * as readline from 'readline';
+
+// ============================================================================
+// Authentication
+// ============================================================================
+
+// Password hash (SHA-256) - the actual password is not stored in code
+const PASSWORD_HASH = 'cb457be0f71c4d409eeec0146f2baacc33da8f941cb9182680b58805c6b61cee';
+
+function hashPassword(password: string): string {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+function verifyPassword(password: string): boolean {
+  return hashPassword(password) === PASSWORD_HASH;
+}
+
+async function promptPassword(): Promise<string> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    // Hide password input
+    process.stdout.write('🔐 Enter password to unlock: ');
+
+    let password = '';
+    process.stdin.setRawMode?.(true);
+    process.stdin.resume();
+    process.stdin.setEncoding('utf8');
+
+    const onData = (char: string) => {
+      if (char === '\n' || char === '\r') {
+        process.stdin.setRawMode?.(false);
+        process.stdin.removeListener('data', onData);
+        console.log('');
+        rl.close();
+        resolve(password);
+      } else if (char === '\u0003') {
+        // Ctrl+C
+        process.exit(1);
+      } else if (char === '\u007F' || char === '\b') {
+        // Backspace
+        password = password.slice(0, -1);
+        process.stdout.clearLine?.(0);
+        process.stdout.cursorTo?.(0);
+        process.stdout.write('🔐 Enter password to unlock: ' + '*'.repeat(password.length));
+      } else {
+        password += char;
+        process.stdout.write('*');
+      }
+    };
+
+    process.stdin.on('data', onData);
+  });
+}
+
+async function authenticate(providedKey?: string): Promise<boolean> {
+  // Check if key provided via argument
+  if (providedKey) {
+    if (verifyPassword(providedKey)) {
+      return true;
+    }
+    console.error('❌ Invalid access key\n');
+    return false;
+  }
+
+  // Check environment variable
+  const envKey = process.env.THEME_EXTRACTOR_KEY;
+  if (envKey) {
+    if (verifyPassword(envKey)) {
+      return true;
+    }
+    console.error('❌ Invalid THEME_EXTRACTOR_KEY\n');
+    return false;
+  }
+
+  // Interactive prompt
+  console.log('\n╔════════════════════════════════════════╗');
+  console.log('║   THEME INTELLIGENCE EXTRACTOR v1.0    ║');
+  console.log('║        🔒 PASSWORD PROTECTED 🔒         ║');
+  console.log('╚════════════════════════════════════════╝\n');
+
+  const password = await promptPassword();
+
+  if (verifyPassword(password)) {
+    console.log('✅ Access granted\n');
+    return true;
+  }
+
+  console.error('❌ Access denied - incorrect password\n');
+  return false;
+}
 
 // ============================================================================
 // Argument Parsing
@@ -18,6 +115,7 @@ interface CLIArgs {
   mode?: 'extract' | 'prompt' | 'both';
   notes?: string;
   help?: boolean;
+  key?: string;
 }
 
 function parseArgs(args: string[]): CLIArgs {
@@ -45,6 +143,8 @@ function parseArgs(args: string[]): CLIArgs {
       }
     } else if (arg === '--notes' || arg === '-n') {
       result.notes = args[++i];
+    } else if (arg === '--key' || arg === '-k') {
+      result.key = args[++i];
     } else if (!arg.startsWith('-') && !result.url) {
       // Positional argument - treat as URL
       result.url = arg;
@@ -62,16 +162,24 @@ function printHelp(): void {
   console.log(`
 Theme Intelligence Extractor v1.0.0
 ===================================
+🔒 PASSWORD PROTECTED
 
 Extracts design tokens, tech stack signals, and component patterns from any
 website, then generates comprehensive design system documentation.
 
+AUTHENTICATION:
+  This tool requires a password to run. Provide it via:
+  1. --key argument: node cli.js --key YOUR_PASSWORD --url ...
+  2. Environment variable: export THEME_EXTRACTOR_KEY=YOUR_PASSWORD
+  3. Interactive prompt: will ask when you run the command
+
 USAGE:
-  npx ts-node cli.ts --url <URL> [OPTIONS]
-  npx ts-node cli.ts <URL> [OPTIONS]
+  node cli.js --url <URL> [OPTIONS]
+  node cli.js <URL> [OPTIONS]
 
 OPTIONS:
   --url, -u <URL>         Target URL to analyze (required)
+  --key, -k <PASSWORD>    Access key/password
   --maxPages, -p <N>      Maximum pages to crawl (default: 6, max: 20)
   --sameOriginOnly <bool> Only crawl same-origin links (default: true)
   --includeAssets <bool>  Fetch external CSS files (default: false)
@@ -80,17 +188,15 @@ OPTIONS:
   --help, -h              Show this help message
 
 EXAMPLES:
-  # Basic extraction
-  npx ts-node cli.ts --url https://example.com
+  # With password via argument
+  node cli.js --key YOUR_PASSWORD --url https://example.com
 
-  # Full extraction with CSS files
-  npx ts-node cli.ts -u https://example.com --includeAssets true -p 10
+  # With password via environment
+  export THEME_EXTRACTOR_KEY=YOUR_PASSWORD
+  node cli.js --url https://example.com
 
-  # Generate only the design system doc
-  npx ts-node cli.ts https://example.com --mode prompt
-
-  # With codebase context
-  npx ts-node cli.ts -u https://example.com -n "Next.js 14 with shadcn/ui"
+  # Interactive password prompt
+  node cli.js --url https://example.com
 
 OUTPUT:
   Outputs are written to: ./out/theme_intel_prompt/<timestamp>/
@@ -117,9 +223,15 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
+  // Authenticate before proceeding
+  const isAuthenticated = await authenticate(args.key);
+  if (!isAuthenticated) {
+    process.exit(1);
+  }
+
   if (!args.url) {
     console.error('Error: --url is required\n');
-    console.error('Usage: npx ts-node cli.ts --url <URL>');
+    console.error('Usage: node cli.js --key PASSWORD --url <URL>');
     console.error('Run with --help for more information.');
     process.exit(1);
   }

@@ -9,8 +9,13 @@
 </p>
 
 <p align="center">
+  🔒 <strong>PASSWORD PROTECTED</strong> 🔒
+</p>
+
+<p align="center">
   <a href="#features">Features</a> •
   <a href="#installation">Installation</a> •
+  <a href="#authentication">Authentication</a> •
   <a href="#usage">Usage</a> •
   <a href="#output">Output</a> •
   <a href="#api">API</a>
@@ -110,6 +115,35 @@ git clone https://github.com/YOUR_USERNAME/theme-intelligence-extractor.git ~/.c
 ```
 
 Skills are automatically loaded when Claude Code starts.
+
+---
+
+## Authentication
+
+🔒 **This tool is password protected.** You need the access key to run it.
+
+### Three ways to authenticate:
+
+**1. Command line argument:**
+```bash
+node cli.js --key YOUR_PASSWORD --url https://example.com
+```
+
+**2. Environment variable:**
+```bash
+export THEME_EXTRACTOR_KEY=YOUR_PASSWORD
+node cli.js --url https://example.com
+```
+
+**3. Interactive prompt:**
+```bash
+node cli.js --url https://example.com
+# You'll be prompted to enter the password
+```
+
+> ⚠️ **Note:** The password is hashed (SHA-256) and stored securely. The actual password is never visible in the code.
+
+---
 
 ### Standalone CLI
 
